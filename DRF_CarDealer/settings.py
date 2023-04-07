@@ -60,6 +60,8 @@ THIRD_PARTY = [
     "django_celery_beat",
     "versatileimagefield",
     "celery",
+    "crispy_forms",
+    "crispy_bootstrap5",
     # "rest_framework_swagger",
     # "django_filters",
     # "constance",
@@ -67,6 +69,9 @@ THIRD_PARTY = [
     # "ckeditor",
 ]
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY
 
@@ -149,12 +154,19 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-
+LOGIN_REDIRECT_URL = "base"
+LOGOUT_REDIRECT_URL = "base"
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
 
-# STATIC_ROOT = os.path.join(STATIC_DIR, 'static/')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+
+STATICFILES_FINDERS = [
+"django.contrib.staticfiles.finders.FileSystemFinder",
+"django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "DRF_CarDealer/static"),
