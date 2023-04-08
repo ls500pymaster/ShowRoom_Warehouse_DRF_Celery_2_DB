@@ -74,6 +74,7 @@
     <!-- Right elements -->
     <div class="d-flex align-items-center">
       <!-- Icon -->
+
       <a class="text-reset me-3" href="#">
         <i class="fas fa-shopping-cart"></i>
       </a>
@@ -128,6 +129,14 @@
           class="dropdown-menu dropdown-menu-end"
           aria-labelledby="navbarDropdownMenuAvatar"
         >
+{% if user.is_authenticated %}
+Hi {{ client.email }}!
+<p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">Log In</a>
+<a href="{% url 'signup' %}">Sign Up</a>
+{% endif %}
           <li>
             <a class="dropdown-item" href="#">My profile</a>
           </li>

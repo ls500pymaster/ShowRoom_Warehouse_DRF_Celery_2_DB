@@ -1,11 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView
 from rest_framework import viewsets
-
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 from .models import Car, Client, Order, OrderItem
 from .models import Category
 from .serializer import CarSerializer, CategorySerializer, OrderSerializer, ClientSerializer
 
 from DRF_CarDealer.apps.cars.tasks import update_car_quantity_in_warehouse
+
 
 
 def index(request):
@@ -76,3 +80,6 @@ class ClientViewSet(viewsets.ModelViewSet):
 	queryset = Client.objects.all()
 	serializer_class = ClientSerializer
 
+
+class AboutPageView(TemplateView):
+	template_name = "about.html"

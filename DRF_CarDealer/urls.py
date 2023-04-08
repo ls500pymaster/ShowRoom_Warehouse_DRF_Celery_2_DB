@@ -16,11 +16,15 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 
 from DRF_CarDealer.apps.cars import views
 from DRF_CarDealer.apps.cars.views import CategoryViewSet, CarViewSet, OrderViewSet, ClientViewSet
+from DRF_CarDealer.apps.users.views import SignupPageView
+
+from DRF_CarDealer.apps.cars.views import AboutPageView
 
 router = DefaultRouter()
 router.register(r"categories", CategoryViewSet, basename="categories")
@@ -31,6 +35,11 @@ router.register(r"users", ClientViewSet, basename="users")
 urlpatterns = [
     path("", views.index, name="base"),
     path("admin/", admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")),
+    # path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("signup/", SignupPageView.as_view(), name="signup"),
+    path("about/", AboutPageView.as_view(), name="about"),
+
     # path('add/<slug:slug>/', views.add_car_to_cart, name='add_car_to_cart'),
     # path('cart/', views.cart_view, name='cart_view'),
     # path("swagger/", schema_view),
