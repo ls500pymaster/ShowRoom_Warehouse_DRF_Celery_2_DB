@@ -13,9 +13,8 @@ import os
 from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
+import os
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'SECRET_KEY_WAREHOUSE'
 
@@ -82,7 +81,7 @@ WSGI_APPLICATION = 'car_warehouse.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'wh_db',
+        'NAME': 'wh_db2',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',

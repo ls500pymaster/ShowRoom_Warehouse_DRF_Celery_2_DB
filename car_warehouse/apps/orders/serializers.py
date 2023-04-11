@@ -5,10 +5,10 @@ from .models import Order, OrderItem
 class OrderItemSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = OrderItem
-		field = "__all__"
+		fields = "__all__"
 
 
 class OrderSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Order
-		field = "__all__"
+		fields = "__all__"

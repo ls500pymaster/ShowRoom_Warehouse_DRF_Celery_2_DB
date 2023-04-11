@@ -51,11 +51,13 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     "DRF_CarDealer.apps.cars",
+    "DRF_CarDealer.apps.orders",
     "DRF_CarDealer.apps.users",
+
 ]
 
 THIRD_PARTY = [
-    "rest_framework",
+    # "rest_framework",
     "redis",
     "django_celery_beat",
     "versatileimagefield",
@@ -153,6 +155,7 @@ USE_TZ = True
 
 LOGIN_REDIRECT_URL = "base"
 LOGOUT_REDIRECT_URL = "base"
+ACCOUNT_SESSION_REMEMBER = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
