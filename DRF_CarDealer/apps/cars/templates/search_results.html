@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock title %} {% block content %}
+<h1>Search Results</h1>
+{% for car in cars_list %}
+<div>
+<h3><a href="{{ car.get_absolute_url }}">{{ car.model }}</a></h3> <p>Car: {{ car.model }}</p>
+<p>Price: $ {{ car.model }}</p>
+</div>
+{% endfor %}
+{% endblock content %}

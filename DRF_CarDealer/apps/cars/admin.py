@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Car, Category, CategoryImage, CarImage, Order, OrderItem
+from .models import Car, Category, CategoryImage, CarImage
 
 
 # Admin Customization
@@ -27,14 +27,6 @@ class AdminCar(admin.ModelAdmin):
 #     list_display = ("car",)
 
 
-@admin.register(Order)
-class AdminOrder(admin.ModelAdmin):
-    list_display = ("id", "order_status")
-
-
-@admin.register(OrderItem)
-class AdminOrderItem(admin.ModelAdmin):
-    list_display = ("id", "cars_list", "sum")
 
     def cars_list(self, obj):
         return ", ".join([str(car) for car in obj.cars.all()])

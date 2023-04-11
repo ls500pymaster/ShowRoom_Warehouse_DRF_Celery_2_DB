@@ -1,0 +1,60 @@
+<!-- car_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ car.model}}</title>
+</head>
+<body>
+    <h1>{{ car.model }}</h1>
+    <h2>Manufacturer: {{ car.manufacturer }}</h2>
+    <p>Category: {{ car.category.get_name_display }}</p>
+    <p>Color: {{ car.color }}</p>
+    <p>Engine: {{ car.engine }}</p>
+    <p>Fuel Type: {{ car.get_fuel_type_display }}</p>
+    <p>Horsepower: {{ car.horsepower }}</p>
+    <p>Drive Wheels: {{ car.get_drive_wheels_display }}</p>
+    <p>Price: {{ car.price }}</p>
+
+    <h3>Add to Cart</h3>
+    <form method="post" action="{{ car.get_absolute_url }}">
+        {% csrf_token %}
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" id="quantity" min="1" value="1">
+        <input type="submit" value="Add to cart">
+    </form>
+
+
+<!-- Add this script tag before the closing </body> tag -->
+<script>
+    const addToCartForm = document.querySelector('form');
+    addToCartForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const carSlug = "{{ car.slug }}";
+        const quantity = document.querySelector('#quantity').value;
+
+        const response = await fetch(`/orders/add_to_cart/${carSlug}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({ quantity }),
+        });
+
+        const jsonResponse = await response.json();
+
+        if (response.ok) {
+            alert('Car added to cart');
+        } else {
+            alert(jsonResponse.error);
+        }
+    });
+</script>
+
+
+</body>
+</html>

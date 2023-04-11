@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 from DRF_CarDealer.apps.users.models import Client
@@ -49,7 +50,6 @@ class Car(models.Model):
 		("rwd", "RWD"),
 		("fwd", "FWD"),
 	]
-
 	manufacturer = models.CharField(max_length=6, default="Lexus")
 	category = models.ForeignKey(Category, on_delete=models.CASCADE)
 	model = models.CharField(max_length=7)
@@ -67,6 +67,9 @@ class Car(models.Model):
 	price = models.DecimalField(max_digits=10, decimal_places=2)
 	available = models.BooleanField(default=True)
 	warehouse_count = models.PositiveIntegerField(default=0)
+
+	def get_absolute_url(self):  # new
+		return reverse("car_detail", args=[str(self.slug)])
 
 	def save(self, *args, **kwargs):
 		if not self.slug or self.name_changed():
@@ -89,33 +92,3 @@ class CarImage(BaseImage):
 	car = models.ImageField(Car, upload_to="car_images", default="lexus.jpg")
 
 
-class OrderStatus(models.TextChoices):
-	PENDING = "pending", "Pending"
-	PROCESSING = "processing", "Processing"
-	READY = "ready", "Ready"
-	COMPLETED = "completed", "Completed"
-	CANCELED = "canceled", "Canceled"
-
-
-class Order(models.Model):
-	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	client = models.OneToOneField(Client, on_delete=models.CASCADE, related_name="cart")
-	car = models.ManyToManyField(Car, related_name='cars')
-	quantity = models.PositiveIntegerField()
-	order_date = models.DateTimeField(auto_now_add=True)
-	order_status = models.CharField(choices=OrderStatus.choices, max_length=20, default=OrderStatus.PROCESSING)
-
-	def __str__(self):
-		return f"Order {self.id} by {self.client.first_name}"
-
-
-class OrderItem(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
-	car = models.ForeignKey(Car, on_delete=models.CASCADE)
-	quantity = models.PositiveIntegerField()
-
-	def sum(self):
-		return self.car.price * self.quantity
-
-	def __str__(self):
-		return f"Order item: {self.car} x {self.quantity} in order {self.order.id}"
