@@ -1,58 +1,112 @@
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from DRF_CarDealer.apps.cars.models import Car
-from .models import CartItem, Order
-import requests
+from .models import Order, CartItem
+from .serializers import CartItemSerializer, OrderSerializer
 
 
-@login_required
-def add_to_cart(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
-    cart_item, created = CartItem.objects.get_or_create(car=car, user=request.user)
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
-    return redirect('cars:car_list')
+class CartView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        cart_items = CartItem.objects.filter(user=user)
+        serializer = CartItemSerializer(cart_items, many=True)
+        return Response(serializer.data)
 
-@login_required
-def create_order(request):
-    cart_items = CartItem.objects.filter(user=request.user)
-    order = Order.objects.create(user=request.user)
-    order.cart_items.set(cart_items)
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        car_id = request.data.get('car_id')
+        quantity = request.data.get('quantity', 1)
 
-    # Making a request to car_warehouse API
-    api_url = 'https://127.0.0.1/api/orders/'
-    headers = {'Content-Type': 'application/json'}
-    data = {
-        'user': request.user.id,
-        'items': [{'car_id': item.car.id, 'quantity': item.quantity} for item in cart_items],
-    }
-    response = requests.post(api_url, json=data, headers=headers)
+        try:
+            car = Car.objects.get(pk=car_id)
+            cart_item, created = CartItem.objects.get_or_create(car=car, user=user)
+            if not created:
+                cart_item.quantity += quantity
+            cart_item.save()
 
-    if response.status_code == status.HTTP_201_CREATED:
+            serializer = CartItemSerializer(cart_item)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Car.DoesNotExist:
+            return Response({"detail": "Car not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        car_id = request.data.get('car_id')
+
+        try:
+            car = Car.objects.get(pk=car_id)
+            cart_item = CartItem.objects.get(car=car, user=user)
+            cart_item.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except Car.DoesNotExist:
+            return Response({"detail": "Car not found."}, status=status.HTTP_404_NOT_FOUND)
+        except CartItem.DoesNotExist:
+            return Response({"detail": "Cart item not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CreateOrderView(APIView):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        cart_items = CartItem.objects.filter(user=user)
+
+        if not cart_items:
+            return Response({"detail": "Your templates is empty."}, status=status.HTTP_400_BAD_REQUEST)
+
+        order = Order.objects.create(user=user)
+        order.cart_items.set(cart_items)
+        order.save()
+
         cart_items.delete()
-        return redirect('orders:order_success')
-    else:
-        return redirect('orders:order_failure')
+
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class CartView(TemplateView):
-    template_name = "cart.html"
+class CartTotalView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        cart_items = CartItem.objects.filter(user=user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        if user.is_authenticated:
-            context['cart_items'] = CartItem.objects.filter(user=user)
-        else:
-            context['cart_items'] = []
-        return context
+        total = sum(item.car.price * item.quantity for item in cart_items)
 
-    
+        return Response({"total": total})
+
+
 def order_success(request):
     return render(request, "order_success.html")
 
 def order_failure(request):
     return render(request, "order_failure.html")
+
+
+@login_required
+def order_summary(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    return render(request, 'order_summary.html', {'cart_items': cart_items})
+
+@login_required
+def place_order(request):
+    if request.method == 'POST':
+        cart_items = CartItem.objects.filter(user=request.user)
+        order = Order(user=request.user)
+        order.save()
+        order.cart_items.set(cart_items)
+        order.save()
+        cart_items.delete()
+        return redirect('order_confirmation')
+    return redirect('order_summary')
+
+
+@login_required
+def order_confirmation(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    context = {'order': order}
+    return render(request, 'order_confirmation.html', context)

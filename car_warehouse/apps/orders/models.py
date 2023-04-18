@@ -1,7 +1,8 @@
 import uuid
 
 from django.db import models
-from car_warehouse.apps.warehouse.models import Car, Client
+from ..warehouse.models import Car, Client
+
 
 class OrderStatus(models.TextChoices):
     PENDING = "pending", "Pending"
@@ -12,7 +13,7 @@ class OrderStatus(models.TextChoices):
 
 
 class Order(models.Model):
-    client = models.OneToOneField(Client, on_delete=models.CASCADE, related_name="cart")
+    client = models.OneToOneField(Client, on_delete=models.CASCADE, related_name="templates")
     cars = models.ManyToManyField(Car, through='OrderCar')  # added many-to-many relationship with Car through OrderCar
     quantity = models.PositiveIntegerField()
     order_date = models.DateTimeField(auto_now_add=True)

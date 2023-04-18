@@ -19,42 +19,9 @@
     <p>Price: {{ car.price }}</p>
 
     <h3>Add to Cart</h3>
-    <form method="post" action="{{ car.get_absolute_url }}">
-        {% csrf_token %}
-        <label for="quantity">Quantity:</label>
-        <input type="number" name="quantity" id="quantity" min="1" value="1">
-        <input type="submit" value="Add to cart">
-    </form>
-
-
-<!-- Add this script tag before the closing </body> tag -->
-<script>
-    const addToCartForm = document.querySelector('form');
-    addToCartForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const carSlug = "{{ car.slug }}";
-        const quantity = document.querySelector('#quantity').value;
-
-        const response = await fetch(`/orders/add_to_cart/${carSlug}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}',
-            },
-            body: JSON.stringify({ quantity }),
-        });
-
-        const jsonResponse = await response.json();
-
-        if (response.ok) {
-            alert('Car added to cart');
-        } else {
-            alert(jsonResponse.error);
-        }
-    });
-</script>
-
-
+        <form method="POST" action="{% url 'cart:add_to_cart' car.slug %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Add to Cart</button>
+        </form>
 </body>
 </html>

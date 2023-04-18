@@ -1,14 +1,9 @@
-# from DRF_CarDealer.apps.users.models import Client
-# from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-#
-#
-# class CustomUserCreationForm(UserCreationForm):
-# 	class Meta:
-# 		model = Client
-# 		fields = ["first_name", "last_name",]
-#
-#
-# class CustomUserChangeForm(UserChangeForm):
-# 	class Meta:
-# 		model = Client
-# 		fields = ["first_name", "last_name",]
+from django import forms
+
+
+PRODUCT_QUANTITY_CHOICES = [(i, str(i)) for i in range(1, 21)]
+
+
+class CartAddProductForm(forms.Form):
+	quantity = forms.TypedChoiceField(choices=PRODUCT_QUANTITY_CHOICES, coerce=int)
+	override = forms.BooleanField(required=False, initial=False, widget=forms.HiddenInput)

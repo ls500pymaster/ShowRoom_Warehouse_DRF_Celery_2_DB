@@ -53,15 +53,16 @@ LOCAL_APPS = [
     "DRF_CarDealer.apps.cars",
     "DRF_CarDealer.apps.orders",
     "DRF_CarDealer.apps.users",
+    "DRF_CarDealer.apps.cart",
+
 
 ]
 
 THIRD_PARTY = [
-    # "rest_framework",
+    "celery",
     "redis",
     "django_celery_beat",
     "versatileimagefield",
-    "celery",
     "crispy_forms",
     "crispy_bootstrap5",
     # "rest_framework_swagger",
@@ -70,6 +71,9 @@ THIRD_PARTY = [
     # "constance.backends.database",
     # "ckeditor",
 ]
+
+# Add session for shopping templates
+# CART_SESSION_ID = "templates"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -153,8 +157,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOGIN_REDIRECT_URL = "base"
-LOGOUT_REDIRECT_URL = "base"
+LOGIN_REDIRECT_URL = "index"
+LOGOUT_REDIRECT_URL = "index"
 ACCOUNT_SESSION_REMEMBER = True
 
 # Static files (CSS, JavaScript, Images)
