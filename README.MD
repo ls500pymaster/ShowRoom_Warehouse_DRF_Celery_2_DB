@@ -13,3 +13,9 @@ Car_warehouse - is a warehouse with cars.
 
 
 Car warehouse stock: http://127.0.0.1:8000/warehouse/cars/
+
+## Redis MAC brew
+
+1- brew install redis
+2- brew services start redis
+3- redis-cli ping

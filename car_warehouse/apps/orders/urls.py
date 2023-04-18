@@ -7,11 +7,9 @@ from .views import OrderViewSet, OrderCreateView
 
 router = DefaultRouter()
 router.register(r"orders", OrderViewSet, basename="orders")
-router.register(r"orders-create", OrderCreateView, basename="orders_create")
 
 urlpatterns = [
     path('api/orders/', OrderCreateView.as_view(), name='orders_create'),
-
 ]
 
 urlpatterns += router.urls

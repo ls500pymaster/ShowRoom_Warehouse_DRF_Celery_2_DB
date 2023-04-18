@@ -19,13 +19,13 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 
-#
-# urlpatterns = [
-#     path("admin/", admin.site.urls),
-#     path("warehouse/", include('apps.warehouse.urls')),
-#     path("orders/", include('apps.orders.urls')),
-# ]
-#
-# if settings.DEBUG:
-#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("warehouse/", include('apps.warehouse.urls')),
+    path("orders/", include('apps.orders.urls')),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

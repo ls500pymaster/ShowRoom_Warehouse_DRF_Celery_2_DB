@@ -92,3 +92,11 @@ class CarImage(BaseImage):
 	car = models.ImageField(Car, upload_to="car_images", default="lexus.jpg")
 
 
+class Warehouse(models.Model):
+	car = models.OneToOneField(Car, on_delete=models.CASCADE)
+	count = models.PositiveIntegerField(default=0)
+
+	def __str__(self):
+		return f"{self.car.model} - {self.count}"
+
+

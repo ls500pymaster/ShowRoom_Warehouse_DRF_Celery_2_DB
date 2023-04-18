@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load orders_extras %}
+
+{% block content %}
+    <h1>Order Confirmation</h1>
+    <p>Thank you for your order, {{ request.user.first_name }}!</p>
+
+    <h2>Order Details</h2>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Date: {{ order.created_at }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Car</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.cart_items.all %}
+                <tr>
+                    <td>{{ item.car }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.car.price }}</td>
+                    <td>{{ item.car.price|multiply:item.quantity }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% with order.cart_items.all|total_order_price as total %}
+        <p><strong>Total Order Price:</strong> {{ total }}</p>
+    {% endwith %}
+{% endblock %}

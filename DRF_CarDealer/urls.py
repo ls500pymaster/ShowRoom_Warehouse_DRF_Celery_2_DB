@@ -18,29 +18,27 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from DRF_CarDealer.apps.cars.views import AboutPageView, CarListView, CategoryListView, IndexView
 from DRF_CarDealer.apps.cars.views import CarDetailView, \
-    SearchResultsListView
-from DRF_CarDealer.apps.orders import views
+    SearchResultsListView, CarListView, AboutPageView, CategoryListView
+from DRF_CarDealer.apps.cars.views import IndexView
+from DRF_CarDealer.apps.orders.views import CartTotalView, CreateOrderView, CartView
 from DRF_CarDealer.apps.users.views import SignupPageView
-from DRF_CarDealer.apps.orders.views import *
 
 
 urlpatterns = [
-    path("", IndexView.as_view(), name="index"),
+
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    # path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("signup/", SignupPageView.as_view(), name="signup"),
-    path("about/", AboutPageView.as_view(), name="about"),
-    path("cars/", CarListView.as_view(), name="car_list"),
-    path("categories/", CategoryListView.as_view(), name="category_list"),
-    path('cars/<slug:slug>/', CarDetailView.as_view(), name='car_detail'),
-
-    path('add/<slug:car_slug>/', views.add_to_cart, name='add_to_cart'),
-    path("cart/", views.CartView.as_view(), name='cart'),
 
     path('search/', SearchResultsListView.as_view(), name='search_results'),
+
+    path("", IndexView.as_view(), name="index"),
+    path("about/", AboutPageView.as_view(), name="about"),
+    path("cars/", CarListView.as_view(), name="car_list"),
+    path('cart/', include('DRF_CarDealer.apps.cart.urls')),
+    path("categories/", CategoryListView.as_view(), name="category_list"),
+    path('<slug:slug>/', CarDetailView.as_view(), name='car_detail'),
 
 ]
 

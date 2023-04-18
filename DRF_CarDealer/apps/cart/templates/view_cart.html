@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load multiply %}
+
+{% block content %}
+  <h1>Your Shopping Cart</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Car</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart_items %}
+        <tr>
+          <td>{{ item.car }}</td>
+          <td>${{ item.car.price }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.car.price|multiply:item.quantity }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Total Price: ${{ total_price }}</h3>
+{% endblock %}

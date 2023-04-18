@@ -58,16 +58,19 @@
       <!-- Left links -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="#">Dashboard</a>
+          <a class="nav-link" href="/">Home Page</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url "car_list" %}">Cars</a>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" href="{% url "category_list" %}">Categories</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url "about" %}">About</a>
         </li>
           <li class="nav-item">
-          <a class="nav-link" href="{% url 'cart' %}">Cart</a>
+          <a class="nav-link" href="{% url 'cart:cart_detail' %}">Cart</a>
         </li>
           <li class="nav-item">
           <form class="form-inline mt-2 mt-md-0" action="{% url 'search_results' %}" method="get">
@@ -138,8 +141,7 @@
           aria-labelledby="navbarDropdownMenuAvatar"
         >
 {% if user.is_authenticated %}
-Hi {{ client.email }}!
-<p><a href="{% url 'logout' %}">Log Out</a></p>
+Hi {{ client.first_name }}!
 {% else %}
 <p>You are not logged in</p>
 <a href="{% url 'login' %}">Log In</a>
@@ -152,7 +154,7 @@ Hi {{ client.email }}!
             <a class="dropdown-item" href="#">Settings</a>
           </li>
           <li>
-            <a class="dropdown-item" href="#">Logout</a>
+            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
           </li>
         </ul>
       </div>
